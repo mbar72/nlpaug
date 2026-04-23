@@ -29,7 +29,7 @@ This python library helps you with augmenting nlp for your machine learning proj
 <br><p align="center"><img src="https://github.com/makcedward/nlpaug/blob/master/res/textual_example.png"/></p>
 <h3 align="center">Acoustic Data Augmentation Example</h3>
 <br><p align="center"><img src="https://github.com/makcedward/nlpaug/blob/master/res/audio_example.png"/></p>
-    
+
 | Section | Description |
 |:---:|:---:|
 | [Quick Demo](https://github.com/makcedward/nlpaug#quick-demo) | How to use this library |
@@ -109,7 +109,12 @@ conda install -c makcedward nlpaug
 
 If you use BackTranslationAug, ContextualWordEmbsAug, ContextualWordEmbsForSentenceAug and AbstSummAug, installing the following dependencies as well
 ```bash
-pip install torch>=1.6.0 transformers>=4.0.0 sentencepiece
+pip install torch>=1.6.0 transformers>=4.11.3 sentencepiece
+```
+
+If you use LambadaAug, installing the following dependencies as well
+```bash
+pip install simpletransformers>=0.61.10
 ```
 
 If you use AntonymAug, SynonymAug, installing the following dependencies as well
@@ -117,12 +122,14 @@ If you use AntonymAug, SynonymAug, installing the following dependencies as well
 pip install nltk>=3.4.5
 ```
 
-If you use WordEmbsAug (word2vec, glove or fasttext), downloading pre-trained model first
+If you use WordEmbsAug (word2vec, glove or fasttext), downloading pre-trained model first and installing the following dependencies as well
 ```bash
 from nlpaug.util.file.download import DownloadUtil
 DownloadUtil.download_word2vec(dest_dir='.') # Download word2vec model
 DownloadUtil.download_glove(model_name='glove.6B', dest_dir='.') # Download GloVe model
 DownloadUtil.download_fasttext(model_name='wiki-news-300d-1M', dest_dir='.') # Download fasttext model
+
+pip install gensim>=4.1.2
 ```
 
 If you use SynonymAug (PPDB), downloading file from the following URI. You may not able to run the augmenter if you get PPDB file from other website
@@ -132,13 +139,17 @@ http://paraphrase.org/#/download
 
 If you use PitchAug, SpeedAug and VtlpAug, installing the following dependencies as well
 ```bash
-pip install librosa>=0.7.1 matplotlib
+pip install librosa>=0.9.1 matplotlib
 ```
 
 ## Recent Changes
 
-### 1.1.7, Jul 20, 2021
-*   [Fixed mising document bug](https://github.com/makcedward/nlpaug/issues/234)
+### 1.1.11 Jul 6, 2022
+*   [Return list of output](https://github.com/makcedward/nlpaug/issues/302)
+*   [Fix download util](https://github.com/makcedward/nlpaug/issues/301)
+*   [Fix lambda label misalignment](https://github.com/makcedward/nlpaug/issues/295)
+*   [Add language pack reference link for SynonymAug](https://github.com/makcedward/nlpaug/issues/289)
+
 
 See [changelog](https://github.com/makcedward/nlpaug/blob/master/CHANGE.md) for more details.
 
@@ -154,7 +165,7 @@ See [changelog](https://github.com/makcedward/nlpaug/blob/master/CHANGE.md) for 
 ## Reference
 This library uses data (e.g. capturing from internet), research (e.g. following augmenter idea), model (e.g. using pre-trained model) See [data source](https://github.com/makcedward/nlpaug/blob/master/SOURCE.md) for more details.
 
-## Citing
+## Citation
 
 ```latex
 @misc{ma2019nlpaug,
@@ -165,57 +176,28 @@ This library uses data (e.g. capturing from internet), research (e.g. following 
 }
 ```
 
-## Book cited nlpaug
+This package is cited by many books, workshop and academic research papers (70+). Here are some of examples and you may visit [here](https://github.com/makcedward/nlpaug/blob/master/CITED.md) to get the full list.
+
+### Workshops cited nlpaug
+*   S. Vajjala. [NLP without a readymade labeled dataset](https://rpubs.com/vbsowmya/tmls2021) at [Toronto Machine Learning Summit, 2021](https://www.torontomachinelearning.com/). 2021
+
+### Book cited nlpaug
 *   S. Vajjala, B. Majumder, A. Gupta and H. Surana. [Practical Natural Language Processing: A Comprehensive Guide to Building Real-World NLP Systems](https://www.amazon.com/Practical-Natural-Language-Processing-Pragmatic/dp/1492054054). 2020
 *   A. Bartoli and A. Fusiello. [Computer Vision–ECCV 2020 Workshops](https://books.google.com/books?hl=en&lr=lang_en&id=0rYREAAAQBAJ&oi=fnd&pg=PR7&dq=nlpaug&ots=88bPp5rhnY&sig=C2ue8Xxbu09l59nAMOcVxWYvvWM#v=onepage&q=nlpaug&f=false). 2020
+*   L. Werra, L. Tunstall, and T. Wolf [Natural Language Processing with Transformers](https://www.amazon.com/Natural-Language-Processing-Transformers-Applications/dp/1098103246/ref=sr_1_3?crid=2CWBPA8QG0TRU&keywords=Natural+Language+Processing+with+Transformers&qid=1645646312&sprefix=natural+language+processing+with+transformers%2Caps%2C111&sr=8-3). 2022
 
-## Research paper cited nlpaug
-*   M. Raghu and  E. Schmidt. [A Survey of Deep Learning for Scientific Discovery](https://arxiv.org/pdf/2003.11755.pdf). 2020
-*   H. Guan, J. Li, H. Xu and M. Devarakonda. [Robustly Pre-trained Neural Model for Direct Temporal Relation Extraction](https://arxiv.org/ftp/arxiv/papers/2004/2004.06216.pdf). 2020
-*   X. He, K. Zhao and X. [Chu. AutoML: A Survey of the State-of-the-Art](https://arxiv.org/pdf/1908.00709.pdf). 2020
-*   S. Illium, R. Muller, A. Sedlmeier and C. Linnhoff-Popien. [Surgical Mask Detection with Convolutional Neural Networks and Data Augmentations on Spectrograms](https://arxiv.org/pdf/2008.04590.pdf). 2020
-*   D. Niederhut. [A Python package for text data enrichment](https://www.theoj.org/joss-papers/joss.02136/10.21105.joss.02136.pdf). 2020
-*   P. Ryan, S. Takafuji, C. Yang, N. Wilson and C. McBride. [Using Self-Supervised Learning of Birdsong for Downstream Industrial Audio Classification](https://openreview.net/pdf?id=_P9LyJ5pMDb). 2020
-*   Z. Shao, J. Yang and S. Ren. [Calibrating Deep Neural Network Classifiers on Out-of-Distribution Datasets](https://arxiv.org/pdf/2006.08914.pdf). 2020
-*   S. Qiu, B. Xu, J. Zhang, Y. Wang, X. Shen, G. D. Melo, C. Long and X. Li EasyAug: An Automatic Textual Data Augmentation Platform for Classification Tasks. 2020
-*   D. Nguyen, Q. H. Nguyen, M. Dao, D. Dang-Nguyen, C. Gurrin and B. T. Nguyen. [Duplicate Identification Algorithms in SaaS Platforms](http://doras.dcu.ie/24667/1/3379174.3392319.pdf). 2020
-*   A. Ollagnier and H. Williams. [Text Augmentation Techniques for Clinical Case Classification](https://www.researchgate.net/profile/Ollagnier_Anais/publication/343949092_Text_Augmentation_Techniques_for_Clinical_Case_Classification/links/5f49602b458515a88b810e4a/Text-Augmentation-Techniques-for-Clinical-Case-Classification.pdf). 2020
-*   V. Atliha and D. Šešok. [Text Augmentation Using BERT for Image Captioning](https://www.mdpi.com/2076-3417/10/17/5978/pdf). 2020
-*   Y. Ma, X. Xu, and Y. Li. [LungRN+NL: An Improved Adventitious Lung Sound Classification Using non-local block ResNet Neural Network with Mixup Data Augmentation](https://www.researchgate.net/profile/Yi_Ma5/publication/343524153_LungRNNL_An_Improved_Adventitious_Lung_Sound_Classification_Using_non-local_block_ResNet_Neural_Network_with_Mixup_Data_Augmentation/links/5f2e6158458515b7290d454d/LungRN-NL-An-Improved-Adventitious-Lung-Sound-Classification-Using-non-local-block-ResNet-Neural-Network-with-Mixup-Data-Augmentation.pdf). 2020
-*   S. N. Zisad, M. Shahadat and K. Andersson. [Speech emotion recognition in neurological disorders using Convolutional Neural Network](http://www.diva-portal.org/smash/get/diva2:1456134/FULLTEXT01.pdf). 2020
-*   M. Bhange and N. Kasliwal. [HinglishNLP: Fine-tuned Language Models for Hinglish Sentiment Detection](https://arxiv.org/pdf/2008.09820.pdf). 2020
-*   T. Deruyttere, S. Vandenhende, D. Grujicic, Y. Liu, L. V. Gool, M. Blaschko, T. v and M. Moens. [Commands 4 Autonomous Vehicles (C4AV) Workshop Summary](https://arxiv.org/pdf/2009.08792.pdf). 2020
-*   A. Tamkin, M. Wu and N. Goodman. [Viewmaker Networks: Learning Views for Unsupervised Representation Learning](https://arxiv.org/pdf/2010.07432.pdf). 2020
-*   A. Spiegel, V. Cheong, J E. Kaplan and A. Sanchez. [MK-SQUIT: Synthesizing Questions using Iterative Template-Filling](https://arxiv.org/pdf/2011.02566.pdf). 2020
-*   C. Zuo, N. Acharya and R. Banerjee. [Querying Across Genres for Medical Claims in News](https://www.aclweb.org/anthology/2020.emnlp-main.139.pdf). 2020
-*   A. Sengupta. [DATAMAFIA at WNUT-2020 Task 2: A Study of Pre-trained Language Models along with Regularization Techniques for Downstream Tasks](https://www.aclweb.org/anthology/2020.wnut-1.51.pdf). 2020
-*   V. Awatramani and A. Kumar. [Linguist Geeks on WNUT-2020 Task 2: COVID-19 Informative Tweet Identification using Progressive Trained Language Models and Data Augmentation](https://www.aclweb.org/anthology/2020.wnut-1.59.pdf). 2020
-*   S. Gerani1, R. Tissot, A Ying, J. Redmon, A. Rimando and R. Hun. [Reducing suicide contagion effect by detecting sentences from media reports with explicit methods of suicide](https://crcs.seas.harvard.edu/files/crcs/files/ai4sg-21_paper_39.pdf). 2020
-*   B. Velichkov, S. Gerginov, P. Panayotov, S. Vassileva, G. Velchev, I. Koyche and  S. Boytcheva. Automatic ICD-10 codes association to diagnosis: Bulgarian case. 2020
-*   T. Li, X. Chen, S. Zhang, Z. Dong and K. Keutzer. [Cross-Domain Sentiment Classification with In-Domain Contrastive Learning](https://arxiv.org/pdf/2012.02943.pdf). 2020
-*   J. Mizgajski, A. Szymczak, M. Morzy, Ł. Augustyniak, P. Szymański and P. Żelasko. [Return on Investment in Machine Learning: Crossing the Chasm between Academia and Busines]
-*   K. Goel, N. Rajani, J. Vig, S. Tan, J. Wu, S. Zheng, C. Xiong, M. Bansal and C. Ré. [Robustness Gym: Unifying the NLP Evaluation Landscape](https://arxiv.org/pdf/2102.01813.pdf). 2021
-*   M. Xu, F. Zhang, X. Cui and W. Zhang. [Speech Emotion Recognition with Multiscale Area Attention and Data Augmentationon](https://arxiv.org/pdf/2102.01813.pdf). 2021
-*   M. Ciolino, D. Noever and J. Kalin. [Multilingual Augmenter: The Model Chooses](https://arxiv.org/pdf/2102.09708.pdf). 2021
-*   F. D. Pereira, F. Pires, S. C. Fonseca, E. H. T. Oliveira, L. S. G. Carvalho, D. B. F. Oliveira and A. I. Cristea. [Towards a Human-AI Hybrid System for Categorising Programming Problems](https://dl.acm.org/doi/pdf/10.1145/3408877.3432422). 2021
-*   D. Zhang, F. Nan, X. Wei, D. Li, H. Zhu, K. McKeown, R. Nallapati, A. Arnold and B. Xiang. [Supporting Clustering with Contrastive Learning](https://arxiv.org/pdf/2103.12953.pdf). 2021
-*   L. Zhu and T. Gosakti. [Augmenting Harper Valley Bank: Robust Automatic Speech Recognition](https://www.researchgate.net/profile/Lauren-Zhu/publication/350340847_Augmenting_Harper_Valley_Bank_Robust_Automatic_Speech_Recognition/links/605a9ead92851cd8ce61b59c/Augmenting-Harper-Valley-Bank-Robust-Automatic-Speech-Recognition.pdf). 2021
-*   P. Ruas, V. D. T. Andrade and F. M. Couto. [Lasige-BioTM at ProfNER: BiLSTM-CRF and contextual Spanish embeddings for Named Entity Recognition and Tweet Binary Classification](https://aclanthology.org/2021.smm4h-1.21.pdf). 2021
-*   V. d Pimpalkhute, P. Nakhate and T. Diwan. [IIITN NLP at SMM4H 2021 Tasks: Transformer Models for Classification of Health-Related Tweets](https://aclanthology.org/2021.smm4h-1.24.pdf). 2021
-*   A. F. Aji, H. A. Wibowo,  M. N. Nityasya, R. E. Prasojo and T. N Fatyanosa. [BERT Goes Brrr: A Venture Towards the Lesser Error in Classifying Medical Self-Reporters on Twitter](https://aclanthology.org/2021.smm4h-1.9.pdf). 2021
-*   V. Kovatchev, P. Smith, M. Lee, and R Devin. [Can vectors read minds better than experts? Comparing data augmentation strategies for the automated scoring of children’s mindreading ability](https://arxiv.org/pdf/2106.01635.pdf). 2021
-*   D. R. Beddiar, M. S. Jahan and M. Oussalah. [Data Expansion using Back Translation and Paraphrasing for Hate Speech Detection](https://arxiv.org/pdf/2106.04681.pdf). 2021
-*   Y. Hirota, N. Garcia, M. Otani, C. Chu, Y. Nakashima, I.Taniguchi and T. Onoye. [A Picture May Be Worth a Hundred Words for Visual Question Answering](https://arxiv.org/pdf/2106.13445.pdf)
-*   Z. Hu and Z. Wang. [Mining Consumer Brand Relationship from Social Media Data: A Natural Language Processing Approach](https://link.springer.com/chapter/10.1007/978-3-030-78609-0_47)
+### Research paper cited nlpaug
+*   Google: M. Raghu and  E. Schmidt. [A Survey of Deep Learning for Scientific Discovery](https://arxiv.org/pdf/2003.11755.pdf). 2020
+*   Sirius XM: E. Jing, K. Schneck, D. Egan and S. A. Waterman. [Identifying Introductions in Podcast Episodes from Automatically Generated Transcripts](https://arxiv.org/pdf/2110.07096.pdf). 2021
+*   Salesforce Research: B. Newman, P. K. Choubey and N. Rajani. [P-adapters: Robustly Extracting Factual Information from Language Modesl with Diverse Prompts](https://arxiv.org/pdf/2110.07280.pdf). 2021
+*   Salesforce Research: L. Xue, M. Gao, Z. Chen, C. Xiong and R. Xu. [Robustness Evaluation of Transformer-based Form Field Extractors via Form Attacks](https://arxiv.org/pdf/2110.04413.pdf). 2021
 
-## Project cited nlpaug
-*   D. Garcia-Olano and A. Jain. [Generating Counterfactual Explanations using Reinforcement Learning Methods for Tabular and Text data](http://www.diegoolano.com/files/RL_course_Fall_2019_Final_Project.pdf). 2019
-*   L. Yi. [Avengers: Achieving Superhuman Performance for Question Answering on SQuAD 2.0 Using Multiple Data Augmentations, Randomized Mini-Batch Training and Architecture Ensembling](https://pdfs.semanticscholar.org/ce36/6e8f69a26ea84a65fc2b37d7492f6c8993fe.pdf). 2020
 
 ## Contributions
 <table>
   <tr>
     <td align="center"><a href="https://github.com/sakares"><img src="https://avatars.githubusercontent.com/u/1306031" width="100px;" alt=""/><br /><sub><b>sakares saengkaew</b></sub></a><br /></td>
     <td align="center"><a href="https://github.com/bdalal"><img src="https://avatars.githubusercontent.com/u/3478378?s=400&v=4" width="100px;" alt=""/><br /><sub><b>Binoy Dalal</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/emrecncelik"><img src="https://avatars.githubusercontent.com/u/20845117?v=4" width="100px;" alt=""/><br /><sub><b>Emrecan Çelik</b></sub></a><br /></td>
   </tr>
 </table>

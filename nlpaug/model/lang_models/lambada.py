@@ -14,6 +14,7 @@ from nlpaug.model.lang_models import LanguageModels
 
 
 class Lambada(LanguageModels):
+	#https://arxiv.org/pdf/1911.03118.pdf
 	def __init__(self, cls_model_dir, gen_model_dir, threshold=0.7, min_length=100, max_length=300, 
 		batch_size=32, temperature=1.0, top_k=50, top_p=0.9, repetition_penalty=1.0, device='cuda'):
 		super().__init__(device, model_type=None)
@@ -63,7 +64,7 @@ class Lambada(LanguageModels):
 		results = []
 		# Encode
 		for label in texts:
-			input_text = 'label_{} {}'.format(label, self.sep_token)
+			input_text = '{} {}'.format(label, self.sep_token)
 			input_ids = self.gen_tokenizer.encode(input_text, add_special_tokens=False, return_tensors='pt')
 			input_ids = input_ids.to(self.device)
 
@@ -85,6 +86,7 @@ class Lambada(LanguageModels):
 					repetition_penalty=self.repetition_penalty,
 					do_sample=True,
 					num_return_sequences=_n,
+					num_workers=1,
 				)
 
 				if len(output_sequences.shape) > 2:

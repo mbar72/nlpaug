@@ -1,5 +1,3 @@
-import numpy as np
-
 import nlpaug.util.math.normalization as normalization
 
 
@@ -9,36 +7,21 @@ class WordEmbeddings:
         self.skip_check = skip_check
         self.emb_size = 0
         self.vocab_size = 0
-        self.embs = {}
-        self.w2v = {}
-        self.i2w = {}
-        self.w2i = {}
-        self.vectors = []
-        self.normalized_vectors = None
+        self.words = []
 
     def read(self, file_path, max_num_vector):
         raise NotImplementedError
 
-    def similar(self, word):
-        raise NotImplementedError
+    def _read(self):
+        self.words = [self.model.index_to_key[i] for i in range(len(self.model.index_to_key))]
+        self.emb_size = self.model[self.model.key_to_index[self.model.index_to_key[0]]]
+        self.vocab_size = len(self.words)
 
     def download(self, model_path):
         raise NotImplementedError
 
-    def word2idx(self, word):
-        return self.w2i[word]
-
-    def word2vector(self, word):
-        return self.w2v[word]
-
-    def idx2word(self, idx):
-        return self.i2w[idx]
-
-    def get_vectors(self):
-        return self.normalized_vectors
-
     def get_vocab(self):
-        return [word for word in self.w2v]
+        return self.words
 
     @classmethod
     def _normalize(cls, vectors, norm='l2'):
@@ -50,10 +33,6 @@ class WordEmbeddings:
             return normalization.standard_norm(vectors)
 
     def predict(self, word, n=1):
-        source_id = self.word2idx(word)
-        source_vector = self.word2vector(word)
-        scores = np.dot(self.normalized_vectors, source_vector)  # TODO: very slow.
-        target_ids = np.argpartition(-scores, self.top_k+2)[:self.top_k+2]  # TODO: slow.
-        target_words = [self.idx2word(idx) for idx in target_ids if idx != source_id and self.idx2word(idx).lower() !=
-                        word.lower()]  # filter out same word
-        return target_words[:self.top_k]
+        result = self.model.most_similar(word, topn=self.top_k+1)
+        result = [w for w, s in result if w.lower() != word.lower()]
+        return result[:self.top_k]

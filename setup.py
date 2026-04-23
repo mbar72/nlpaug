@@ -7,9 +7,12 @@ if sys.version_info < (3,):
 with open("README.md", encoding="utf8") as f:
     readme = f.read()
 
+with open('requirements.txt') as f:
+    install_reqs = f.read().splitlines()
+
 setup(
     name="nlpaug",
-    version="1.1.7",
+    version="1.1.11",
     author="Edward Ma",
     author_email="makcedward@gmail.com",
     url="https://github.com/makcedward/nlpaug",
@@ -19,8 +22,10 @@ setup(
     long_description_content_type="text/markdown",
     packages=find_packages(exclude="test"),
     include_package_data=True,
+    install_requires=install_reqs,
     keywords=[
         "deep learning", "neural network", "machine learning",
         "nlp", "natural language processing", "text", "audio", "spectrogram",
-        "augmentation", "adversarial attack", "ai", "ml"]
+        "augmentation", "adversarial attack", "ai", "ml"],
+    python_requires=">=3.7"
 )

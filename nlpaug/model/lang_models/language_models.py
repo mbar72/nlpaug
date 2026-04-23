@@ -13,7 +13,8 @@ import nlpaug.util.selection.filtering as filtering
 class LanguageModels:
     OPTIMIZE_ATTRIBUTES = ['external_memory', 'return_proba']
 
-    def __init__(self, device='cpu', model_type='', temperature=1.0, top_k=100, top_p=0.01, optimize=None, silence=True):
+    def __init__(self, device='cpu', model_type='', temperature=1.0, top_k=100, top_p=0.01, batch_size=32,
+        optimize=None, silence=True):
         try:
             import torch
         except ModuleNotFoundError:
@@ -25,6 +26,7 @@ class LanguageModels:
         self.temperature = temperature
         self.top_k = top_k
         self.top_p = top_p
+        self.batch_size = batch_size
         self.optimize = self.init_optimize(optimize)
         self.silence = silence
 
@@ -50,7 +52,7 @@ class LanguageModels:
         self.model.to(device)
 
     def get_device(self):
-        raise
+        return str(self.model.device)
 
     def clean(self, text):
         return text.strip()
@@ -58,7 +60,7 @@ class LanguageModels:
     def predict(self, text, target_word=None, n=1):
         raise NotImplementedError
 
-    # for HuggingFace pipeline 
+    # for HuggingFace pipeline
     def convert_device(self, device):
         if device == 'cpu' or device is None:
             return -1
@@ -156,7 +158,7 @@ class LanguageModels:
     def pick(self, logits, idxes, target_word, n=1, include_punctuation=False):
         candidate_ids, candidate_probas = self.prob_multinomial(logits, n=n*10)
         candidate_ids = [idxes[candidate_id] for candidate_id in candidate_ids]
-        results = self.get_candidiates(candidate_ids, candidate_probas, target_word, n, 
+        results = self.get_candidates(candidate_ids, candidate_probas, target_word, n,
             include_punctuation)
 
         return results
@@ -181,7 +183,7 @@ class LanguageModels:
     def is_skip_candidate(self, candidate):
         return False
 
-    def get_candidiates(self, candidate_ids, candidate_probas, target_word=None, n=1, 
+    def get_candidates(self, candidate_ids, candidate_probas, target_word=None, n=1,
         include_punctuation=False):
         # To have random behavior, NO sorting for candidate_probas.
         results = []

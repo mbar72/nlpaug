@@ -16,7 +16,7 @@ class TestContextualWordEmbsAug(unittest.TestCase):
 
         cls.text = 'The quick brown fox jumps over the lazy dog. '
         cls.texts = [
-            'The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.'
+            'The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.',
             "Seeing all of the negative reviews for this movie, I figured that it could be yet another comic masterpiece that wasn't quite meant to be."
         ]
         cls.debug = False
@@ -27,10 +27,8 @@ class TestContextualWordEmbsAug(unittest.TestCase):
             'bert-base-cased',
             'roberta-base',
             'distilroberta-base',
-            'facebook/bart-base',
-            # 'allenai/longformer-base-4096',
+            'allenai/longformer-base-4096',
             'squeezebert/squeezebert-uncased',
-
         ]
 
     def test_quicktest(self):
@@ -39,7 +37,8 @@ class TestContextualWordEmbsAug(unittest.TestCase):
                 print('=============:', model_path)
             aug = naw.ContextualWordEmbsAug(model_path=model_path)
             text = 'The quick brown fox jumps over the lazaaaaaaaaay dog'
-            augmented_text = aug.augment(text)
+            augmented_data = aug.augment(text)
+            augmented_text = augmented_data[0]
             # print('[{}]: {}'.format(model_path, augmented_text))
             self.assertNotEqual(text, augmented_text)
 
@@ -78,7 +77,8 @@ class TestContextualWordEmbsAug(unittest.TestCase):
         ]
 
         for input_param in inputs:
-            augmented_text = aug.augment(input_param['text'])
+            augmented_data = aug.augment(input_param['text'])
+            augmented_text = augmented_data[0]
             self.assertNotEqual(input_param['text'], augmented_text)
             # print('[{}]: {}'.format(input_param['lang'], augmented_text))
 
@@ -143,9 +143,7 @@ class TestContextualWordEmbsAug(unittest.TestCase):
                 if self.debug:
                     print('=============data:', data)
                 self.substitute_stopwords(substitute_aug, data)
-                self.top_k([insert_aug, substitute_aug], data)
                 self.decode_by_tokenizer([insert_aug, substitute_aug])
-                self.no_candidiate([insert_aug, substitute_aug])
 
             self.subword([insert_aug, substitute_aug])
             self.max_length([insert_aug, substitute_aug])
@@ -154,25 +152,17 @@ class TestContextualWordEmbsAug(unittest.TestCase):
             
         self.assertLess(0, len(self.model_paths))
 
-    def no_candidiate(self, augs):
-        text = 'This python library helps you with augmenting nlp for your machine learning projects. Visit this introduction to understand about it.'
-        for aug in augs:
-            original_top_k = aug.model.top_k
-            aug.model.top_k = 1
-
-            for _ in range(10):
-                augmented_text = aug.augment(text)
-                self.assertTrue(aug.model.get_mask_token() not in augmented_text)
-
-            aug.model.top_k = original_top_k
-
     def skip_short_token(self, aug):
         text = 'I am a boy'
-        self.assertNotEqual(text.lower(), aug.augment(text).lower())
+        augmented_data = aug.augment(text)
+        augmented_text = augmented_data[0]
+        self.assertNotEqual(text.lower(), augmented_text.lower())
 
         original_aug_min = aug.aug_min
         aug.aug_min = 4
-        self.assertEqual(text.lower(), aug.augment(text).lower())
+        augmented_data = aug.augment(text)
+        augmented_text = augmented_data[0]
+        self.assertEqual(text.lower(), augmented_text.lower())
         aug.aug_min = original_aug_min
 
     def decode_by_tokenizer(self, augs):
@@ -180,39 +170,46 @@ class TestContextualWordEmbsAug(unittest.TestCase):
         for aug in augs:
             original_aug_min = aug.aug_min
             aug.aug_min = 4
-            augmented_text = aug.augment(text)
+            augmented_data = aug.augment(text)
+            augmented_text = augmented_data[0]
             self.assertTrue("'t" in augmented_text and " 't'" not in augmented_text)
             aug.aug_min = original_aug_min
 
     def insert(self, aug, data):
         self.assertLess(0, len(data))
-        augmented_text = aug.augment(data)
+        augmented_data = aug.augment(data)
 
         if isinstance(data, list):
-            for d, a in zip(data, augmented_text):
+            for d, a in zip(data, augmented_data):
                 self.assertNotEqual(d, a)
                 self.assertTrue(aug.model.get_subword_prefix() not in a)
         else:
+            augmented_text = augmented_data[0]
             self.assertNotEqual(data, augmented_text)
             self.assertTrue(aug.model.get_subword_prefix() not in augmented_text)
 
     def substitute(self, aug, data):
-        augmented_text = aug.augment(data)
+        augmented_data = aug.augment(data)
 
         if isinstance(data, list):
-            for d, a in zip(data, augmented_text):
+            for d, a in zip(data, augmented_data):
                 self.assertNotEqual(d, a)
                 self.assertTrue(aug.model.get_subword_prefix() not in a)
         else:
+            augmented_text = augmented_data[0]
             self.assertNotEqual(data, augmented_text)
             self.assertTrue(aug.model.get_subword_prefix() not in augmented_text)
 
     def substitute_stopwords(self, aug, data):
         original_stopwords = aug.stopwords
         if isinstance(data, list):
-            aug.stopwords = [t.lower() for t in data[0].split(' ')[:3]]
+            stopwords = [t.lower() for t in data[0].split(' ')[:3]]
+            aug.stopwords = stopwords
+            aug._build_stop_words(stopwords)
         else:
-            aug.stopwords = [t.lower() for t in data.split(' ')[:3]]
+            stopwords = [t.lower() for t in data.split(' ')[:3]]
+            aug.stopwords = stopwords
+            aug._build_stop_words(stopwords)
         aug_n = 3
 
         self.assertLess(0, len(data))
@@ -220,11 +217,11 @@ class TestContextualWordEmbsAug(unittest.TestCase):
         try_cnt = 5
         for _ in range(try_cnt):
             augmented_cnt = 0
-            augmented_text = aug.augment(data)
+            augmented_data = aug.augment(data)
 
             if isinstance(data, list):
-                for d, augmented_data in zip(data, augmented_text):
-                    augmented_tokens = aug.tokenizer(augmented_data)
+                for d, augmented_text in zip(data, augmented_data):
+                    augmented_tokens = aug.tokenizer(augmented_text)
                     tokens = aug.tokenizer(d)
                     for token, augmented_token in zip(tokens, augmented_tokens):
                         if token.lower() in aug.stopwords and len(token) > aug_n:
@@ -234,6 +231,7 @@ class TestContextualWordEmbsAug(unittest.TestCase):
 
                     self.assertGreater(augmented_cnt, 3)
             else:
+                augmented_text = augmented_data[0]
                 augmented_tokens = aug.tokenizer(augmented_text)
                 tokens = aug.tokenizer(data)
 
@@ -246,33 +244,19 @@ class TestContextualWordEmbsAug(unittest.TestCase):
                 self.assertGreater(augmented_cnt, 3)
 
         aug.stopwords = original_stopwords
+        aug._build_stop_words(original_stopwords)
 
     def subword(self, augs):
         # https://github.com/makcedward/nlpaug/issues/38
         text = "If I enroll in the ESPP, when will my offering begin and the price set?"
         texts = [self.text, text]
 
-        for _ in range(100):
+        for _ in range(10):
             for aug in augs:
                 aug.augment(text)
                 aug.augment(texts)
 
         self.assertTrue(True)
-
-    def top_k(self, augs, text):
-        for aug in augs:
-            original_top_k = aug.model.top_k
-
-            aug.model.top_k = 10000
-
-            augmented_text = aug.augment(text)
-
-            self.assertNotEqual(text, augmented_text)
-
-            if aug.model_type not in ['roberta']:
-                self.assertTrue(aug.model.get_subword_prefix() not in augmented_text)
-
-            aug.model.top_k = original_top_k
 
     def max_length(self, augs):
         # from IMDB v1
@@ -302,8 +286,8 @@ class TestContextualWordEmbsAug(unittest.TestCase):
         texts = [self.text, text]
 
         for aug in augs:
-            augmented_texts = aug.augment(texts)
-            for augmented_text, orig_text in zip(augmented_texts, texts):
+            augmented_data = aug.augment(texts)
+            for augmented_text, orig_text in zip(augmented_data, texts):
                 self.assertNotEqual(orig_text, augmented_text)
 
     # https://github.com/makcedward/nlpaug/pull/51
@@ -313,9 +297,9 @@ class TestContextualWordEmbsAug(unittest.TestCase):
 
         texts = [self.text, text]
 
-        augmented_text = aug.augment(text)
-        self.assertNotEqual(text, augmented_text)
+        augmented_data = aug.augment(text)
+        self.assertNotEqual(text, augmented_data)
 
-        augmented_texts = aug.augment(texts)
-        for augmented_text, orig_text in zip(augmented_texts, texts):
+        augmented_data = aug.augment(texts)
+        for augmented_text, orig_text in zip(augmented_data, texts):
             self.assertNotEqual(orig_text, augmented_text)

@@ -1,6 +1,32 @@
 NLPAUG Change Log
 ================
 
+### 1.1.11 Jul 6, 2022
+*   [Return list of output](https://github.com/makcedward/nlpaug/issues/302)
+*   [Fix download util](https://github.com/makcedward/nlpaug/issues/301)
+*   [Fix lambda label misalignment](https://github.com/makcedward/nlpaug/issues/295)
+*   [Add language pack reference link for SynonymAug](https://github.com/makcedward/nlpaug/issues/289)
+
+### 1.1.10 Dec 23, 2021
+*   [KeywordAug supports Turkish](https://github.com/makcedward/nlpaug/pull/261)
+*   [Fix FrequencyMasking time range ](https://github.com/makcedward/nlpaug/pull/258)
+*   [Remove unnecessary printout](https://github.com/makcedward/nlpaug/pull/263)
+*   [Rollback ContextualWordEmbsForSentenceAug and AbstSummAug to use custom transformers API to reduce execution time]
+
+### 1.1.9 Dec 1, 2021
+*   [ReservedAug supports generating all combinations](https://github.com/makcedward/nlpaug/pull/251)
+*   [Rollback to use native HuggingFace API from Huggingface pipeline to solve slow performance issue](https://github.com/makcedward/nlpaug/issues/248)
+*   [Added description to explain the model of WordEmbsAug is custom class](https://github.com/makcedward/nlpaug/issues/249)
+*   [Change random behavior to increase more augmentation samples](https://github.com/makcedward/nlpaug/pull/228)
+*   [Fix SpeedAug random factor issue](https://github.com/makcedward/nlpaug/issues/207)
+
+### 1.1.8, Oct 18, 2021
+*   Added RandomSentAug
+*   Added skip_check parameter for WordEmbsAug
+*   [OCRAug support customer mapping/ json file](https://github.com/makcedward/nlpaug/issues/241)
+*   [Improve slow loading word2vec issue](https://github.com/makcedward/nlpaug/issues/239)
+*   [Solve transformers comparability issue](https://github.com/makcedward/nlpaug/issues/243)
+
 ### 1.1.7, Jul 20, 2021
 *   [Fixed mising document bug](https://github.com/makcedward/nlpaug/issues/234)
 

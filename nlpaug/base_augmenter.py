@@ -1,3 +1,4 @@
+import math
 import random
 import numpy as np
 import pandas as pd
@@ -37,7 +38,9 @@ class Augmenter:
     def augment(self, data, n=1, num_thread=1):
         """
         :param object/list data: Data for augmentation. It can be list of data (e.g. list 
-            of string or numpy) or single element (e.g. string or numpy)
+            of string or numpy) or single element (e.g. string or numpy). Numpy format only
+            supports audio or spectrogram data. For text data, only support string or
+            list of string.
         :param int n: Default is 1. Number of unique augmented output. Will be force to 1 
             if input is list of data
         :param int num_thread: Number of thread for data augmentation. Use this option 
@@ -60,13 +63,13 @@ class Augmenter:
 
                 # Return empty value per data type
                 if isinstance(data, str):
-                    return ''
+                    return []
                 elif isinstance(data, list):
                     return []
                 elif isinstance(data, np.ndarray):
                     return np.array([])
 
-                return None
+                return []
 
         action_fx = None
         clean_data = self.clean(data)
@@ -122,10 +125,9 @@ class Augmenter:
             if len(augmented_results) >= expected_output_num:
                 break
 
-         # TODO: standardize output to list even though n=1 from 1.0.0
         if len(augmented_results) == 0:
             # if not result, return itself
-            if n == 1:
+            if isinstance(data, list):
                 return data
             # Single input with/without multiple input
             else:
@@ -137,8 +139,6 @@ class Augmenter:
             if isinstance(data, list):
                 return augmented_results
             else:
-                if n == 1:
-                    return augmented_results[0]
                 return augmented_results[:n]
 
         # return augmented_results
@@ -240,15 +240,15 @@ class Augmenter:
     def _generate_aug_cnt(self, size, aug_min, aug_max, aug_p=None):
         if aug_p is not None:
             percent = aug_p
-        elif self.aug_p is not None:
+        elif self.aug_p:
             percent = self.aug_p
         else:
             percent = 0.3
-        cnt = int(percent * size)
+        cnt = int(math.ceil(percent * size))
 
-        if cnt < aug_min:
+        if aug_min and cnt < aug_min:
             return aug_min
-        if aug_max is not None and cnt > aug_max:
+        if aug_max and cnt > aug_max:
             return aug_max
         return cnt
 
@@ -261,6 +261,16 @@ class Augmenter:
         aug_cnt = self.generate_aug_cnt(len(inputs))
         token_idxes = [i for i, _ in enumerate(inputs)]
         aug_idxes = self.sample(token_idxes, aug_cnt)
+        return aug_idxes
+
+    def _get_random_aug_idxes(self, data):
+        aug_cnt = self.generate_aug_cnt(len(data))
+        idxes = self.pre_skip_aug(data)
+        if len(idxes) < aug_cnt:
+            aug_cnt = len(idxes)
+
+        aug_idxes = self.sample(idxes, aug_cnt)
+
         return aug_idxes
 
     def __str__(self):

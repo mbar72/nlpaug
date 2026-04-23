@@ -13,15 +13,17 @@ class TestWordEmbsModel(unittest.TestCase):
         load_dotenv(env_config_path)
 
     def test_bogus_fasttext_loading(self):
-        test_file = os.path.join(os.environ.get("TEST_DIR"), 'res', 'text', 'bogus_fasttext.vec')
-        expected_vector = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+        test_file = os.path.join(os.environ.get("PACKAGE_DIR"), 'res', 'text', 'bogus_fasttext.vec')
 
-        fasttext = nmw.Fasttext()
-        fasttext.read(test_file)
+        # Change to not supporting incorrect format file after switching to use gensim package
+        with self.assertRaises(Exception) as error:
+            fasttext = nmw.Fasttext()
+            fasttext.read(test_file)
+        self.assertIn('cannot copy sequence with size 11 to array axis with dimension 10', str(error.exception))
 
-        for word in fasttext.w2v:
-            self.assertSequenceEqual(list(fasttext.w2v[word]), expected_vector)
+        # for word in fasttext.get_vocab():
+        #     self.assertSequenceEqual(list(fasttext.model[word]), expected_vector)
 
-        self.assertSequenceEqual(["test1", "test2", "test_3", "test 4", "test -> 5"], fasttext.get_vocab())
+        # self.assertSequenceEqual(["test1", "test2", "test_3", "test 4", "test -> 5"], fasttext.get_vocab())
 
-        self.assertEqual(len(fasttext.normalized_vectors), 5)
+        # self.assertEqual(len(fasttext.get_vocab()), 5)

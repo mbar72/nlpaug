@@ -18,12 +18,12 @@ class KeyboardAug(CharAugmenter):
     :param float aug_char_p: Percentage of character (per token) will be augmented.
     :param int aug_char_min: Minimum number of character will be augmented.
     :param int aug_char_max: Maximum number of character will be augmented. If None is passed, number of augmentation is
-        calculated via aup_char_p. If calculated result from aug_p is smaller than aug_max, will use calculated result
+        calculated via aup_char_p. If calculated result from aug_char_p is smaller than aug_char_max, will use calculated result
         from aup_char_p. Otherwise, using aug_max.
     :param float aug_word_p: Percentage of word will be augmented.
     :param int aug_word_min: Minimum number of word will be augmented.
     :param int aug_word_max: Maximum number of word will be augmented. If None is passed, number of augmentation is
-        calculated via aup_word_p. If calculated result from aug_p is smaller than aug_max, will use calculated result
+        calculated via aup_word_p. If calculated result from aug_word_p is smaller than aug_word_max, will use calculated result
         from aug_word_p. Otherwise, using aug_max.
     :param list stopwords: List of words which will be skipped from augment operation.
     :param str stopwords_regex: Regular expression for matching words which will be skipped from augment operation.
@@ -34,8 +34,9 @@ class KeyboardAug(CharAugmenter):
     :param bool include_numeric: If True, numeric character may be included in augmented data.
     :param int min_char: If word less than this value, do not draw word for augmentation
     :param str model_path: Loading customize model from file system
-    :param str lang: Indicate built-in language model. Default value is 'en'. Possible values are 'en' and 'th'. 
-        If custom model is used (passing model_path), this value will be ignored. 
+    :param str lang: Indicate built-in language model. Default value is 'en'. Possible values are 'en', 'th' (Thai), 
+        'tr'(Turkish), 'de'(German), 'es'(Spanish), 'fr'(French), 'it'(Italian), 'nl'(Dutch), 'pl'(Polish), 
+        'uk'(Ukrainian), 'he'(Hebrew). If custom model is used (passing model_path), this value will be ignored. 
     :param str name: Name of this augmenter
 
     >>> import nlpaug.augmenter.char as nac

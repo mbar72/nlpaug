@@ -44,12 +44,13 @@ class MtTransformers(LanguageModels):
     def translate_one_step_batched(
             self, data, tokenizer, model
     ):
-        tokenized_texts = tokenizer(data, padding=True, return_tensors='pt')
+        tokenized_texts = tokenizer(data, padding=True, truncation=True, return_tensors='pt')
         tokenized_dataset = t_data.TensorDataset(*(tokenized_texts.values()))
         tokenized_dataloader = t_data.DataLoader(
             tokenized_dataset,
             batch_size=self.batch_size,
-            shuffle=False
+            shuffle=False,
+            num_workers=1
         )
 
         all_translated_ids = []
